@@ -1,0 +1,1 @@
+java -jar compiler.jar --js server.js --js_output_file server-compiled.js

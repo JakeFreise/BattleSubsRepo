@@ -1,0 +1,20 @@
+v1.01
+fix grid \done
+decrease play area \done
+increase turning speed \done
+Prevent torpedos from killing youself and decrease explosion radius \done  
+Allow shooting torpedos from rear of submarine \done
+Prevent players from leaving the play area
+Prevent players from spawning too close to boundaries, and adjust their angle to point towards center
+
+v1.1
+Allow players to fire outside of vision
+Adjust UI to allow players to see what grid they are aiming at
+Add minimap
+Add radar system
+Fix turret bug
+Add something to signify the rear of the ship
+
+v1.2
+Add Destroyer class (2 guns, depth charges, 1 torpedo,  fast turns, 2 hp)
+Add Battleship class (6 guns, no torpedos or depth charges, slow turns, 6 hp)
