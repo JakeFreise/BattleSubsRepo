@@ -81,8 +81,8 @@ function setup() {
   drawPeriscope(displayWidth*2, displayHeight*2, 1000, subview);
   
 
-  //socket = io.connect('https://battlesubs.herokuapp.com');
-  socket = io.connect('localhost:4000');
+  socket = io.connect('https://battlesubs.herokuapp.com');
+  //socket = io.connect('localhost:4000');
   
   player = new Ship(0, 2000, 2000);
   respawn();
