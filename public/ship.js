@@ -129,8 +129,6 @@ function Ship(id, x, y)
 	{
 		this.turn *= .5;
 	}
-	
-	console.log(turn);
     this.rotateAngle += turn;
   }
   
