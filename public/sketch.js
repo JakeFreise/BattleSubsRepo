@@ -40,8 +40,8 @@ var alive = 1;
 function respawn()
 {
   isAlive = 1;
-  player.pos.x = 10; //randomLocation();
-  player.pos.y = 10; //randomLocation();
+  player.pos.x = randomLocation();
+  player.pos.y = randomLocation();
   player.rotateAngle = towardsCenter();
   player.hp = player.maxHP;
 }
