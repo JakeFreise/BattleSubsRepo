@@ -17,6 +17,8 @@ function Torpedo(location, destination,fireVel, shipAngle, ownedByPlayer)
   this.currentSplash = 0;
   this.maxSplash = 250;
   this.fireForce.setMag(.01);
+  this.r = 10;
+  
   
   this.missPos;
   this.missed = 0;
@@ -61,7 +63,7 @@ function Torpedo(location, destination,fireVel, shipAngle, ownedByPlayer)
      this.makeBubbles(this.pos.x, this.pos.y);
      var distance = this.des.dist(this.pos);
      
-     if((distance <= 10 && !this.isSplashed) || this.missed)
+     if((distance <= this.r && !this.isSplashed) || this.missed || this.checkCollisions())
      {
        this.isSplashed = true;
        if(this.isMine)
@@ -69,7 +71,7 @@ function Torpedo(location, destination,fireVel, shipAngle, ownedByPlayer)
         emitExplosion(this.pos, this.maxSplash, 2);
        } 
      }
-     else if(distance>10)
+     else if(distance>this.r)
      {
        var yDiff = abs(this.pos.y - this.des.y);
        var xDiff = abs(this.pos.x - this.des.x);
@@ -96,8 +98,46 @@ function Torpedo(location, destination,fireVel, shipAngle, ownedByPlayer)
        {
          this.isDoneSplashing = true;
        }
-     }
+     }	 
    }
+   
+	this.checkCollisions = function()
+	{
+		for(var i = 0; i<ships.length; i++)
+		{
+			if(ships[i]!= null && ships[i].id != player.id)
+			{
+				var rect = new rectangle(ships[i].pos.x, ships[i].pos.y, 350, 50);
+				var circle = new circ(this.pos.x, this.pos.y, this.r);
+			
+				if(this.intersects(circle, rect))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+   
+   
+	this.intersects = function(circle, rect)
+	{
+		
+		var circleDistancex = abs(circle.x - rect.x);
+		var circleDistancey = abs(circle.y - rect.y);
+
+		if (circleDistancex > (rect.width/2 + circle.r)) { return false; }
+		if (circleDistancey > (rect.height/2 + circle.r)) { return false; }
+
+		if (circleDistancex <= (rect.width/2)) { return true; } 
+		if (circleDistancey <= (rect.height/2)) { return true; }
+
+		var cornerDistance_sq = (circleDistancex - rect.width/2)^2 +
+							 (circleDistancey - rect.height/2)^2;
+
+		return (cornerDistance_sq <= (circle.r^2));
+	}
+
    
    this.splash = function()
    {
@@ -118,4 +158,19 @@ function Torpedo(location, destination,fireVel, shipAngle, ownedByPlayer)
       this.bubbles.splice(0,1)
     }
   }
+}
+
+function circ(x, y, r)
+{
+	this.x = x;
+	this.y = y;
+	this.r = r;
+}
+
+function rectangle(x, y, w, h)
+{
+	this.x = x;
+	this.y = y;
+	this.width = w;
+	this.height = h;
 }

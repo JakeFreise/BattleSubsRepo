@@ -130,7 +130,7 @@ function checkCollisions()
     for(var k = 0; k<players.length; k++)
     {
       var distance = Math.hypot(explosions[j].x-players[k].x, explosions[j].y-players[k].y);
-      if(distance < explosions[j].r && players[k].id != explosions[j].playerID)
+      if(intersects(explosions[j], players[k]) && players[k].id != explosions[j].playerID)
       {
         console.log(players[k].id + ", " + explosions[j].playerID);
         
@@ -149,6 +149,24 @@ function checkCollisions()
   }
 }
 
+function intersects(circle, rect)
+{
+	
+    var circleDistancex = Math.abs(circle.x - rect.x);
+    var circleDistancey = Math.abs(circle.y - rect.y);
+
+    if (circleDistancex > (rect.width/2 + circle.r)) { return false; }
+    if (circleDistancey > (rect.height/2 + circle.r)) { return false; }
+
+    if (circleDistancex <= (rect.width/2)) { return true; } 
+    if (circleDistancey <= (rect.height/2)) { return true; }
+
+    var cornerDistance_sq = (circleDistancex - rect.width/2)^2 +
+                         (circleDistancey - rect.height/2)^2;
+
+    return (cornerDistance_sq <= (circle.r^2));
+}
+
 function Player(id, x, y, aimX, aimY)
 {
   this.id = id;
@@ -160,6 +178,8 @@ function Player(id, x, y, aimX, aimY)
   this.hp;
   this.alive
   this.radar;
+  this.width = 350;
+  this.height = 50;
 }
 
 function Bullet(x, y, desX, desY, fireVelX, fireVelY, speed, caliber, playerID)
