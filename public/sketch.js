@@ -9,7 +9,7 @@ var radar = [];
 var RADAR = false;
 
 var socket;
-var mapSize = 3;
+var mapSize = 4;
 var blockSize = 10;
 var gridSize = 100;
 var cols = blockSize;
