@@ -673,7 +673,7 @@ function keyPressed() {
   else if(keyCode == 82)
   {
 	  if (RADAR){RADAR = false;}
-	  else{RADAR = true;}
+	  else if(!player.isUnderwater) {RADAR = true;}
   }
   return 0;
 }
