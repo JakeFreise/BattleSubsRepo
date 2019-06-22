@@ -12,7 +12,9 @@ function Ship(id, x, y)
   this.thrust = 1;
   this.speed = 0;
   this.maxspeed = 1;
-  this.maxRotateDelta = .001;
+  this.maxTurn = 1;
+  this.maximumRotateDelta = .003;
+  
   this.leftPressed = false;
   this.rightPressed = false;
   this.wPressed = false;
@@ -23,6 +25,8 @@ function Ship(id, x, y)
   this.aimDelta = 0;
   
   this.tid = 0;
+  this.tid2 = 0;
+  
   this.pressAcc = 100;
   
   this.torpedoAngle;
@@ -32,6 +36,8 @@ function Ship(id, x, y)
   
   this.weapon = 0;
   this.maxAmmo = 4;
+  this.reloads = [];
+  
   this.currentAmmo = this.maxAmmo;
   
   this.maxTorpedos = 2;
@@ -107,8 +113,7 @@ function Ship(id, x, y)
   this.update = function()
   {
     this.makeBubbles(this.pos.x - (this.shipLength/2 -5)*cos(this.rotateAngle), this.pos.y - (this.shipLength/2 -5)*sin(this.rotateAngle));
-
-    this.turn();
+    //this.turn();
     translate(this.pos.x, this.pos.y);
     rotate(this.rotateAngle);
     
@@ -117,9 +122,16 @@ function Ship(id, x, y)
     this.vel.add(this.acc);
     this.acc.mult(0);
     
-   this.constrainToMap();
+    this.constrainToMap();
     
-    this.rotateAngle += this.rotateDelta;
+	var turn = (this.rotateDelta * this.maximumRotateDelta) * atan(this.speed+.33);
+	if(this.underwater)
+	{
+		this.turn *= .5;
+	}
+	
+	console.log(turn);
+    this.rotateAngle += turn;
   }
   
   this.constrainToMap = function()
@@ -149,7 +161,7 @@ function Ship(id, x, y)
 	  {
 		this.currentAmmo--;
 		var that = this;
-		setTimeout(function(){ reloadBullet(that); }, 4000);
+		this.reloads[this.maxAmmo - this.currentAmmo] = setTimeout(function(){ reloadBullet(that); }, 4000);
 		return newEntity;
 	  }	
     }
@@ -220,15 +232,7 @@ function Ship(id, x, y)
   
   this.turn = function()
   {
-    if(this.leftPressed && !this.rightPressed)
-    {
-      this.rotateLeft();
-    }
-    else if(this.rightPressed && !this.leftPressed)
-    {
-      this.rotateRight();
-    }
-    else
+    if((!this.leftPressed && !this.rightPressed) || (this.leftPressed && this.rightPressed))
     {
       this.rotateStop();
     }
@@ -317,11 +321,25 @@ function Ship(id, x, y)
     if(!this.isUnderwater)
     {
       this.isUnderwater = true;
+	  this.currentAmmo = 0;
+	  for(var i = 0; i<this.reloads.length; i++)
+	  {
+		  clearTimeout(this.reloads[i]);
+	  }
     }
     else
     {
       this.isUnderwater = false;
+	  this.currentAmmo = 0;
+	  
+	  var that = this;
+	  clearTimeout(setTimeout(function(){ reloadBullet(that); }, 4000));
+	  for(var i = 0; i<this.maxAmmo; i++)
+	  {
+		setTimeout(function(){ reloadBullet(that); }, 4000);
+	  }
     }
+	
   }
   
   this.increaseSpeed = function()
@@ -360,6 +378,21 @@ function Ship(id, x, y)
     }
   }
   
+  this.adjustTurn = function(func)
+  {
+    if(this.tid2==0)
+	{
+        this.tid2=setInterval(func,this.pressAcc);
+    }
+  }
+  
+  this.stopTurn = function(){
+    if(this.tid2!=0){
+        clearInterval(this.tid2);
+        this.tid2=0;
+    }
+  }
+  
   this.pressW = function()
   {
 	this.toggleOn('player.increaseSpeed()');
@@ -387,21 +420,25 @@ function Ship(id, x, y)
   this.pressLeft = function()
   {
     this.leftPressed = true;
+	this.adjustTurn('player.increaseLeft()');
   }
   
   this.pressRight = function()
   {
     this.rightPressed = true;
+	this.adjustTurn('player.increaseRight()');
   }
   
   this.releaseLeft = function()
   {
     this.leftPressed = false;
+	this.stopTurn();
   }
   
   this.releaseRight = function()
   {
     this.rightPressed = false;
+	this.stopTurn();
   }
   
   this.isLeftPressed = function()
@@ -414,25 +451,39 @@ function Ship(id, x, y)
     this.rightPressed;
   }
   
-  this.rotateLeft = function()
+
+  
+  this.increaseRight = function()
   {
-    if(abs(this.rotateDelta) < abs(this.maxRotateDelta)&&this.speed>0)
+	if(this.rotateDelta < this.maxTurn)
     {
-      this.rotateDelta += -.0004;
+      this.rotateDelta += 0.1;
     }
+	else
+	{
+		this.rotateDelta = this.maxTurn;
+	}	
   }
   
-  this.rotateRight = function()
+  this.increaseLeft = function()
   {
-    if((abs(this.rotateDelta) < abs(this.maxRotateDelta))&&this.speed>0)
+	if(this.rotateDelta > -this.maxTurn)
     {
-      this.rotateDelta += .0004;
+      this.rotateDelta += -0.1;
     }
+	else
+	{
+		this.rotateDelta = -this.maxTurn;
+	}
   }
+  
+  
   this.rotateStop = function()
   {
     this.rotateDelta = 0;
   }
+  
+
   
   this.weaponSwap = function()
   {
@@ -449,7 +500,7 @@ function Ship(id, x, y)
 
 function reloadBullet(theShip)
 {
-  if(theShip.currentAmmo < theShip.maxAmmo)
+  if((theShip.currentAmmo < theShip.maxAmmo) && !this.isUnderwater)
   {
     theShip.currentAmmo++;
   }

@@ -350,6 +350,7 @@ function drawView()
   push();
   
   translate(player.pos.x, player.pos.y);
+
   rotate(player.rotateAngle);
   
   let v0 = createVector(0, 0);
@@ -366,6 +367,7 @@ function drawRadar()
 	var x1 = player.pos.x;
 	var y1 = player.pos.y;
 	var locationVector = createVector(x1, y1);
+	textSize("20");
 	
 	for(var i = 0; i<ships.length; i++)
 	{
@@ -390,8 +392,9 @@ function drawRadar()
 				translate(locationVector.x, locationVector.y);
 				rotate(radarVector.heading());
 				translate(radarVector.mag(), 0);
-				text(distance, 0, 0);
-				text(coord, 0, 10);
+				fill("white");
+				text(distance, 0, 20);
+				text(coord, 0, 0);
 				pop();
 			}
 		}
@@ -459,8 +462,13 @@ function drawBubbles(bubbles)
 
 function drawUI(base, vec)
 {
-  var myColor = 'black';
+  var myColor = 'white';
   
+  if(RADAR)
+  {
+	fill('blue');
+	ellipse(base.x, base.y, 10, 10);
+  }
   fill('white');
   textSize("18");
   text(floor(player.speed*100)+"%", 10, 40);
