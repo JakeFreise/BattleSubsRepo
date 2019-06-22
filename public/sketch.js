@@ -659,6 +659,7 @@ function keyPressed() {
   }
   else if(keyCode == 32)
   {
+	if (RADAR){RADAR = false;}
     player.pressSpace();
   }
   else if(keyCode == 70)
