@@ -14,8 +14,8 @@ function GunBattery(x, y, size, numberOfGuns, spacing, color) {
 
   this.createGunBattery = function(vector) {
     //this.offset = 100;
-    this.weaponView = createGraphics(displayWidth, displayWidth);
-    this.submergedView = createGraphics(displayWidth, displayWidth);
+    this.weaponView = createGraphics(130, 130);
+    this.submergedView = createGraphics(130, 130);
     this.weaponView.ellipseMode(CENTER);
     this.drawGunBattery(this.weaponView, color[1]);
     this.drawGunBattery(this.submergedView, color[0]);

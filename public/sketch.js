@@ -112,13 +112,41 @@ function setup() {
               savedBubbles = ships[index].bubbles;
             }
             print("making new ship: " + index + " : " + item.id);
-            var ship = new newShip(item.id, item.x, item.y, item.aimX, item.aimY, item.rotateAngle, item.isUnderwater, item.speed, item.hp, item.radar);
-            ship.bubbles = savedBubbles;
-            ships[index] = ship;
+			
+			var found = false;
+			for(var i = 0; i<ships.length; i++)
+			{
+				if(ships[i].id != null)
+				{
+					if(ships[i].id == item.id)
+					{
+						ships[i].refresh(item.x, item.y, item.aimX, item.aimY, item.rotateAngle, item.isUnderwater, item.speed, item.hp, item.radar);
+						found = true;
+						break;
+					}
+				}
+			}
+			
+			if(!found)
+			{
+				var ship = new newShip(item.id, item.x, item.y, item.aimX, item.aimY, item.rotateAngle, item.isUnderwater, item.speed, item.hp, item.radar);
+				ship.bubbles = savedBubbles;
+				ships[index] = ship;
+			}
           }
-          else if(item.id == ships[index].id)
+          else
           {
-            ships.splice(index, 1);
+			for(var i = 0; i<ships.length; i++)
+			{
+				if(ships[i].id != null)
+				{
+					if(ships[i].id == item.id)
+					{
+						ships.splice(index, 1);
+						break;
+					}
+				}
+			}
           }
         }
   	  }); 
@@ -186,23 +214,6 @@ function createServerTorpedo(item)
   var fireVel = createVector(item.fireVelX, item.fireVelY);
   var shipAngle = item.rotateAngle;
   return new Torpedo(location, destination,fireVel, shipAngle, false);
-}
-
-/*
-function updatePlayers()
-{
-  ships = [];
-  for(var i = 0; i<players.length; i++)
-  {
-    ships[i] = createShip(players[i].id, players[i].x, players[i].y, players[i].aimVector);
-  }
-}*/
-
-function createShip(id, x, y, aimVector)
-{
-  var newShip = new Ship(id, x, y);
-  newShip.setAimVector(aimVector);
-  return newShip;
 }
 
 function draw() {

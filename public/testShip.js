@@ -22,10 +22,10 @@ function newShip(id, x, y, aimX, aimY, rotateAngle, isUnderwater, speed, hp, rad
     this.shipLength = 350;
     this.shipWidth = 50;
     this.maxHP = 4;
-    //this.gunBattery[0] = new GunBattery(75,0, 20, 2, 5, this.color);
-    //this.gunBattery[0].createGunBattery(this.spawn);
-    //this.gunBattery[1] = new GunBattery(-75,0, 20, 2, 5, this.color);
-    //this.gunBattery[1].createGunBattery(this.spawn);
+    this.gunBattery[0] = new GunBattery(75,0, 20, 2, 5, this.color);
+    this.gunBattery[0].createGunBattery(this.spawn);
+    this.gunBattery[1] = new GunBattery(-75,0, 20, 2, 5, this.color);
+    this.gunBattery[1].createGunBattery(this.spawn);
   }
   else
   {
@@ -50,11 +50,21 @@ function newShip(id, x, y, aimX, aimY, rotateAngle, isUnderwater, speed, hp, rad
       ellipse(0, 0, this.shipLength, this.shipWidth); 
       ellipse(0, 0, this.shipLength/6, this.shipWidth/6);
       this.drawDamage();
-      //this.gunBattery[0].show("abovewater", this.aimVector);
-      //this.gunBattery[1].show("abovewater", this.aimVector);
+      this.gunBattery[0].show("abovewater", this.aimVector);
+      this.gunBattery[1].show("abovewater", this.aimVector);
     }
     
     //text(this.speed, 10, 30);
+  }
+  
+  this.refresh = function(x, y, aimX, aimY, rotateAngle, isUnderwater, speed, hp, radar)
+  {
+	this.pos = createVector(x,y);
+	this.aimVector = createVector(aimX,aimY);
+	this.rotateAngle = rotateAngle;
+	this.speed = speed;
+	this.hp = hp;
+	this.radar = radar;
   }
   
   this.update = function()

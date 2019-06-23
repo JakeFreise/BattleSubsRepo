@@ -70,6 +70,8 @@ function newConnection(socket)
       {
         player.x = data.x;
         player.y = data.y;
+		player.aimX = data.aimX;
+		player.aimY = data.aimY;
         player.rotateAngle = data.rotateAngle;
         player.isUnderwater = data.isUnderwater;
         player.speed = data.speed;
@@ -172,6 +174,8 @@ function Player(id, x, y, aimX, aimY)
   this.id = id;
   this.x = x;
   this.y = y;
+  this.aimX = aimX;
+  this.aimY = aimY;
   this.rotateAngle;
   this.isUnderwater;
   this.speed;
